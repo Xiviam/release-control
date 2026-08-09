@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Release approval and deployment control plane" />
+    <title>Release Control</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="background-grid"></div>
+
+    <section id="auth-view" class="auth-shell">
+      <div class="auth-copy">
+        <div class="brand-mark">RC</div>
+        <p class="eyebrow">Release orchestration</p>
+        <h1>Ship with control.<br />Rollback with confidence.</h1>
+        <p class="lead">
+          Approval gates, scheduled deployments, immutable audit history and signed webhooks in
+          one lightweight control plane.
+        </p>
+        <div class="feature-row">
+          <span>RBAC</span><span>Outbox</span><span>HMAC</span><span>Audit log</span>
+        </div>
+      </div>
+
+      <form id="login-form" class="panel auth-card">
+        <p class="eyebrow">Dashboard access</p>
+        <h2>Sign in</h2>
+        <label>Email<input name="email" type="email" value="admin@example.com" required /></label>
+        <label>Password<input name="password" type="password" required /></label>
+        <button type="submit" class="button primary">Open dashboard</button>
+        <p class="muted small">
+          First launch credentials are configured through <code>.env</code>.
+          <a href="/docs">Explore Swagger instead</a>.
+        </p>
+      </form>
+    </section>
+
+    <div id="app-view" class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark compact">RC</span><b>Release Control</b></div>
+        <div class="sidebar-section">
+          <div class="section-heading"><span>Projects</span><span id="project-count">0</span></div>
+          <div id="project-list" class="project-list"></div>
+        </div>
+        <form id="project-form" class="mini-form">
+          <input name="name" placeholder="Project name" required />
+          <input name="slug" placeholder="project-slug" pattern="[a-z0-9-]+" required />
+          <button class="button subtle" type="submit">+ New project</button>
+        </form>
+        <div class="sidebar-footer">
+          <div><span class="online-dot"></span><span id="user-email">Connected</span></div>
+          <button id="logout-button" class="link-button">Log out</button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Control plane</p>
+            <h1 id="current-project-name">Select a project</h1>
+          </div>
+          <div class="topbar-actions">
+            <span id="user-role" class="role-pill">-</span>
+            <a href="/docs" class="button subtle">API docs</a>
+          </div>
+        </header>
+
+        <section id="empty-state" class="empty-state panel">
+          <div class="empty-icon">→</div>
+          <h2>Create or select a project</h2>
+          <p>Then add an environment and move your first release through the workflow.</p>
+        </section>
+
+        <div id="project-view" class="hidden">
+          <section class="stats-grid">
+            <article class="panel metric"><span>Draft</span><strong id="stat-draft">0</strong></article>
+            <article class="panel metric"><span>Awaiting approval</span><strong id="stat-pending">0</strong></article>
+            <article class="panel metric"><span>In progress</span><strong id="stat-progress">0</strong></article>
+            <article class="panel metric accent"><span>Deployed</span><strong id="stat-deployed">0</strong></article>
+          </section>
+
+          <section class="workspace-grid">
+            <div class="panel release-panel">
+              <div class="panel-heading">
+                <div><p class="eyebrow">Pipeline</p><h2>Releases</h2></div>
+                <button id="refresh-button" class="icon-button" title="Refresh">↻</button>
+              </div>
+              <div id="release-list" class="release-list"></div>
+            </div>
+
+            <div class="right-rail">
+              <form id="environment-form" class="panel form-panel">
+                <div><p class="eyebrow">Target</p><h3>Add environment</h3></div>
+                <label>Name<input name="name" placeholder="production" required /></label>
+                <label class="check-row">
+                  <input name="requires_approval" type="checkbox" checked /> Require approval
+                </label>
+                <button class="button subtle" type="submit">Add environment</button>
+              </form>
+
+              <form id="release-form" class="panel form-panel">
+                <div><p class="eyebrow">Artifact</p><h3>Create release</h3></div>
+                <label>Environment<select name="environment_id" id="environment-select" required></select></label>
+                <label>Version<input name="version" placeholder="v1.2.0" required /></label>
+                <label>Commit SHA<input name="commit_sha" placeholder="a1b2c3d" minlength="7" required /></label>
+                <label>Artifact URI<input name="artifact_uri" placeholder="ghcr.io/acme/api:v1.2.0" required /></label>
+                <label>Changelog<textarea name="changelog" placeholder="What changed?"></textarea></label>
+                <button class="button primary" type="submit">Create draft</button>
+              </form>
+
+              <div class="panel audit-panel">
+                <div class="panel-heading"><div><p class="eyebrow">Traceability</p><h3>Audit</h3></div></div>
+                <div id="audit-list" class="audit-list"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
+
