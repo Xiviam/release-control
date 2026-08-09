@@ -18,7 +18,7 @@ jobs:
         run: |
           unzip -o release-control-source.zip
           rm release-control-source.zip
-          rm .github/workflows/import-source.yml
+          rm .github/workflows/ci.yml
       - name: Commit imported source
         run: |
           git config user.name "github-actions[bot]"
